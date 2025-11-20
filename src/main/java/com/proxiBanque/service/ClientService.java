@@ -1,6 +1,8 @@
 package com.proxibanque.service;
 
 import com.proxibanque.model.Client;
+import com.proxibanque.model.CompteCourant;
+import com.proxibanque.model.CompteEpargne;
 import com.proxibanque.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -15,6 +17,22 @@ public class ClientService {
     }
 
     public Client save(Client c) {
+
+        // Vérifier si le client n'a pas déjà de compte (pour éviter double création si update)
+        if (c.getCompteCourant() == null) {
+            CompteCourant cc = new CompteCourant();
+            cc.setSolde(0);
+            cc.setDecouvertAutorise(1000);
+            c.setCompteCourant(cc);
+        }
+
+        if (c.getCompteEpargne() == null) {
+            CompteEpargne ce = new CompteEpargne();
+            ce.setSolde(0);
+            c.setCompteEpargne(ce);
+        }
+
+
         return repo.save(c);
     }
 
